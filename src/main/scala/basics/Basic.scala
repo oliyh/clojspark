@@ -11,7 +11,7 @@ object SparkWordCount {
     val sc = new SparkContext(new SparkConf().setAppName("Spark Basic"))
 
     val inputRDD =
-      sc.textFile("hdfs://localhost/user/kabeer/LearningSpark/inputdata/input1.txt")
+      sc.textFile("hdfs://localhost/user/clojspark/basics/inputdata/wordcount-input.txt")
 
     val wordsRDD = inputRDD.flatMap(x => x.split(" "))
     val countRDD = wordsRDD.map(x => (x, 1))
