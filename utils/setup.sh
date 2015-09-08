@@ -2,7 +2,9 @@
 
 # Create HDFS folders:
 sudo -u hdfs hadoop fs -mkdir -p hdfs://localhost/user/clojspark/basics/inputdata
+sudo -u hdfs hadoop fs -mkdir -p hdfs://localhost/user/root
 sudo -u hdfs hadoop fs -chown -R root:root hdfs://localhost/user/clojspark/basics/inputdata
+sudo -u hdfs hadoop fs -chown -R root:root hdfs://localhost/user/root
 
 # Copy the input file into the HDFS folders
 hadoop fs -copyFromLocal input/wordcount-input.txt hdfs://localhost/user/clojspark/basics/inputdata
