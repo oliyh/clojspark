@@ -18,4 +18,5 @@ spark-submit --class basics.SparkWordCount --master yarn target/scala-2.10/clojs
 
 # same example in Clojure
 cd ../clojure
-lein run
+lein uberjar
+spark-submit --class spark.core --master yarn target/sparkling-getting-started-1.0.0-SNAPSHOT-standalone.jar

@@ -8,7 +8,7 @@ object SparkWordCount {
 
   def main(args: Array[String]) {
 
-    val sc = new SparkContext(new SparkConf().setAppName("Spark Basic"))
+    val sc = new SparkContext(new SparkConf().setAppName("Scala Spark example"))
 
     val inputRDD =
       sc.textFile("hdfs://localhost/user/clojspark/basics/inputdata/wordcount-input.txt")

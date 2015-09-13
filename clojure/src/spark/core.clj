@@ -3,6 +3,7 @@
             [sparkling.conf :as conf]
             [sparkling.core :as spark]
             [sparkling.destructuring :as s-de])
+  (:gen-class)
   )
 
 
@@ -13,8 +14,8 @@
 
 (defn make-spark-context []
   (let [c (-> (conf/spark-conf)
-              (conf/master "local")
-              (conf/app-name "spark-example"))]
+              ;;(conf/master "local")
+              (conf/app-name "Clojure Spark example"))]
     (spark/spark-context c)))
 
 
