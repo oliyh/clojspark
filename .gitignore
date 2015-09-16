@@ -2,6 +2,8 @@
 # git folders. If you notice anything extra, then kindly add to this list
 # accordingly.
 
+*.nrepl-port
+
 # Eclipse - Java
 .classpath
 .project
