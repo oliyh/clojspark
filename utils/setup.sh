@@ -7,16 +7,9 @@ sudo -u hdfs hadoop fs -chown -R dummy:dummy hdfs://localhost/user/clojspark/bas
 sudo -u hdfs hadoop fs -chown -R dummy:dummy hdfs://localhost/user/dummy
 
 # Copy the input file into the HDFS folders
-hadoop fs -copyFromLocal input/wordcount-input.txt hdfs://localhost/user/clojspark/basics/inputdata
+hadoop fs -copyFromLocal -f input/house-prices.csv hdfs://localhost/user/clojspark/basics/inputdata/house-prices.csv
+hadoop fs -copyFromLocal -f input/house-prices-small.csv hdfs://localhost/user/clojspark/basics/inputdata/house-prices-small.csv
 
-# Build Scala Package
-cd scala
-sbt package;
-
-# Submit the job on YARN
-spark-submit --class basics.SparkWordCount --master yarn target/scala-2.10/clojspark_2.10-0.1-SNAPSHOT.jar
-
-# same example in Clojure
-cd ../clojure
+cd clojure
 lein uberjar
 spark-submit --class spark.core --master yarn target/sparkling-getting-started-1.0.0-SNAPSHOT-standalone.jar
