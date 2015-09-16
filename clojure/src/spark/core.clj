@@ -24,7 +24,7 @@
     a))
 
 (defn do-run [sc]
-  (let [input-rdd (spark/text-file sc "hdfs://localhost/user/clojspark/basics/inputdata/house-prices.csv")
+  (let [input-rdd (spark/text-file sc "hdfs://localhost/user/clojspark/basics/inputdata/house-prices-small.csv")
         postcode-groups (->> (spark/flat-map (fn [l] (s/split l #"\n")) input-rdd)
                              (spark/map-to-pair (fn [l]
                                                   (let [record (->sale-record l)]
