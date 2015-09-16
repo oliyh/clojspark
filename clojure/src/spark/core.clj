@@ -6,18 +6,38 @@
   (:gen-class))
 
 (defn ->sale-record [line]
-  (zipmap [:price :date :postcode]
-          (map #(s/replace % #"\"" "") (drop 1 (s/split line #",")))))
+  (update-in (->> (s/split line #",")
+                  (drop 1)
+                  (map #(s/replace % #"\"" ""))
+                  (zipmap [:price :date :postcode]))
+             [:price] #(Integer/parseInt %)))
+
+(defn highest-price [a b]
+  (if (< (:price b) (:price a))
+    a
+    b))
+
+(defn lowest-price [a b]
+  (if (< (:price b) (:price a))
+    b
+    a))
 
 (defn do-run [sc]
   (let [input-rdd (spark/text-file sc "hdfs://localhost/user/clojspark/basics/inputdata/house-prices.csv")
         postcode-groups (->> (spark/flat-map (fn [l] (s/split l #"\n")) input-rdd)
                              (spark/map-to-pair (fn [l]
                                                   (let [record (->sale-record l)]
-                                                    (spark/tuple (first (s/split (:postcode record) #" ")) record))))
-                             (spark/group-by-key))]
+                                                    (spark/tuple (first (s/split (:postcode record) #" ")) record)))))
 
-    (println (spark/take 10 postcode-groups))))
+        highest-prices (->> postcode-groups
+                            (spark/reduce-by-key highest-price))
+
+        lowest-prices (->> postcode-groups
+                           (spark/reduce-by-key lowest-price))
+
+        price-brackets (spark/join highest-prices lowest-prices)]
+
+    (spark/take 10 price-brackets)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic Spark management
@@ -39,23 +59,3 @@
 
 (defn -main [& args]
   (do-run (make-spark-context false)))
-
-
-(comment                              )
-
-        (comment lowest-prices (->> outcode-prices
-                                    (spark/reduce-by-key min)))
-
-
-(comment highest-prices (->> outcode-prices
-                                     (spark/reduce-by-key max)))
-
-(comment outcode-prices (->> postcode-groups
-                                     (spark/map-to-pair (fn [t]
-                                                          (println (:price (._2 t)))
-                                                          (spark/tuple (._1 t) (:price (._2 t)))))))
-
-(comment count-rdd (->> (spark/map-to-pair (fn [w] (spark/tuple w 1)) words-rdd)
-                       (spark/reduce-by-key +) )
-
-         res (spark/map (s-de/key-value-fn (fn [k v] (str "(" k ", " v ")"))) output) )
