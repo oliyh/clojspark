@@ -1,10 +1,9 @@
 (ns spark.core
   (:require [clojure.string :as s]
+            [spark.pprint :as pprint]
             [sparkling.conf :as conf]
             [sparkling.core :as spark]
             [sparkling.destructuring :as s-de])
-  (:import [scala Tuple2]
-           [java.util ArrayList])
   (:gen-class))
 
 (defn ->sale-record [line]
@@ -60,22 +59,4 @@
     (do-run sc)))
 
 (defn -main [& args]
-  (do-run (make-spark-context false)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; pretty printing
-
-(defmulti spark-dispatch class)
-
-(defmethod spark-dispatch :default [thing]
-  (clojure.pprint/code-dispatch thing))
-
-(defmethod spark-dispatch Tuple2 [thing]
-  (clojure.pprint/code-dispatch [(s-de/first thing) (s-de/second thing)]))
-
-(defmethod spark-dispatch ArrayList [thing]
-  (clojure.pprint/code-dispatch (into [] thing)))
-
-(defn spprint [spark-thing]
-  (clojure.pprint/with-pprint-dispatch spark-dispatch
-    (clojure.pprint/pprint spark-thing)))
+  (pprint/spprint (do-run (make-spark-context false))))
